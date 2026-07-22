@@ -1,0 +1,46 @@
+name: Deploy embed.js
+
+# Publishes dist/embed.js to the smart-banner CDN whenever it changes on main.
+# Requires these repository settings (Settings -> Secrets and variables -> Actions):
+#   Secrets:   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+#   Variables: AWS_REGION, SMART_BANNER_BUCKET, SMART_BANNER_CF_DISTRIBUTION_ID
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - dist/embed.js
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-embed
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Upload embed.js to S3 with a long max-age
+        run: |
+          aws s3 cp dist/embed.js "s3://${{ vars.SMART_BANNER_BUCKET }}/embed.js" \
+            --content-type "application/javascript; charset=utf-8" \
+            --cache-control "public, max-age=31536000, immutable"
+
+      - name: Invalidate CloudFront /embed.js
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ vars.SMART_BANNER_CF_DISTRIBUTION_ID }}" \
+            --paths "/embed.js"

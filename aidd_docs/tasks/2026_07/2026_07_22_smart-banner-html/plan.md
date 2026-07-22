@@ -1,6 +1,6 @@
 ---
 objective: "A zero-dependency embed.js reaches parity with the WordPress banner and ships to smart-banner.pletho.re, with the repo restructured into wordpress/embed/dist and both install paths documented — the WP plugin still working unchanged."
-status: in-progress
+status: blocked
 ---
 
 <!-- Fill or omit these sections; never add, rename, or reorder one. -->
