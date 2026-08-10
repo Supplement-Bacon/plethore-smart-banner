@@ -1,21 +1,23 @@
 name: Deploy embed.js
 
-# Publishes dist/embed.js to the smart-banner CDN whenever it changes on main.
+# Publishes dist/embed.js to the smart-banner CDN whenever it changes:
+#   push on main -> production environment,  push on dev -> staging environment.
 # Auth follows the org standard (OIDC role assumption, like plethore-whatsapp-bot) —
 # no static AWS keys required.
 #
 # This repository is PUBLIC, so no infra identifiers (AWS account, role ARN,
 # bucket, distribution id) live in this file. They are stored as *environment
-# secrets* on the `production` GitHub environment (keeps them out of this public
-# repo's logs/config), and the job below binds to that environment:
-#   Settings -> Environments -> production -> Environment secrets
-#     DEPLOY_ROLE_ARN            OIDC deploy role (modelled on plethore-whatsapp-bot-github-deploy-production)
-#     EMBED_S3_BUCKET            bucket serving smart-banner.pletho.re
+# secrets* on each GitHub environment (keeps them out of this public repo's
+# logs/config); the job binds to the environment matching the pushed branch, so
+# the same secret names resolve to the right (prod vs staging) values:
+#   Settings -> Environments -> {production|staging} -> Environment secrets
+#     DEPLOY_ROLE_ARN            OIDC deploy role (modelled on plethore-whatsapp-bot-github-deploy-<env>)
+#     EMBED_S3_BUCKET            bucket serving the env's smart-banner host
 #     EMBED_CF_DISTRIBUTION_ID   CloudFront distribution id (E...)
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
     paths:
       - dist/embed.js
   workflow_dispatch:
@@ -25,7 +27,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: deploy-embed
+  group: deploy-embed-${{ github.ref_name }}
   cancel-in-progress: false
 
 env:
@@ -34,7 +36,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
