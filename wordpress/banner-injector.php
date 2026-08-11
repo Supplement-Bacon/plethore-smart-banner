@@ -16,7 +16,7 @@ function plethore_smart_banner_enqueue_scripts()
     wp_enqueue_script(
         'plethore-smart-banner-script',
         plugin_dir_url(__FILE__) . 'assets/banner.js',
-        array('jquery'),
+        array(),
         '1.0',
         true
     );
