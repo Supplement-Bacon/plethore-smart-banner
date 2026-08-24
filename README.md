@@ -59,3 +59,5 @@ injects its own markup and styles, resolves the account slug from its own
 ---
 
 Supplément Bacon — Copyright © 2025
+
+<!-- governance smoke test, to be reverted -->
