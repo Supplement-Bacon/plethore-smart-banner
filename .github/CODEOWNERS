@@ -1,0 +1,35 @@
+# CODEOWNERS — géré par la gouvernance Pléthore. Ne pas éditer à la main.
+#
+# Ce fichier ne déclare QUE des chemins sensibles. Il n'y a volontairement aucune
+# règle attrape-tout `*` : un chemin non listé ici n'a pas de propriétaire, et une
+# approbation d'un membre de l'équipe suffit pour fusionner.
+#
+# Rappel de syntaxe : la DERNIÈRE règle qui correspond gagne. Les chemins les plus
+# spécifiques sont donc en bas de fichier.
+# Ce fichier doit exister sur CHAQUE branche de base protégée (CODEOWNERS est lu
+# depuis la branche de base de la PR, pas depuis la branche par défaut).
+
+# --- Chaîne d'exécution CI et secrets ---------------------------------------
+# Les workflows exécutent du code arbitraire avec accès aux secrets du repo.
+/.github/ @Supplement-Bacon/plethore-maintainers
+
+# --- Le fichier CODEOWNERS lui-même ------------------------------------------
+# Sans cette règle, la gouvernance est contournable par une simple PR.
+/CODEOWNERS @Supplement-Bacon/plethore-maintainers
+/.github/CODEOWNERS @Supplement-Bacon/plethore-maintainers
+
+# --- Chaîne d'approvisionnement ----------------------------------------------
+/package.json @Supplement-Bacon/plethore-maintainers
+/package-lock.json @Supplement-Bacon/plethore-maintainers
+/yarn.lock @Supplement-Bacon/plethore-maintainers
+
+# --- Build, publication, infrastructure --------------------------------------
+/tsup.config.ts @Supplement-Bacon/plethore-maintainers
+/tsconfig.json @Supplement-Bacon/plethore-maintainers
+/.npmrc @Supplement-Bacon/plethore-maintainers
+/.npmignore @Supplement-Bacon/plethore-maintainers
+/cdk.json @Supplement-Bacon/plethore-maintainers
+/lib/ @Supplement-Bacon/plethore-maintainers
+/bin/ @Supplement-Bacon/plethore-maintainers
+/.env.example @Supplement-Bacon/plethore-maintainers
+/Makefile @Supplement-Bacon/plethore-maintainers
