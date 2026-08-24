@@ -1,29 +1,29 @@
-# CODEOWNERS — géré par la gouvernance Pléthore. Ne pas éditer à la main.
+# CODEOWNERS — owned by Plethore governance. Do not edit by hand.
 #
-# Ce fichier ne déclare QUE des chemins sensibles. Il n'y a volontairement aucune
-# règle attrape-tout `*` : un chemin non listé ici n'a pas de propriétaire, et une
-# approbation d'un membre de l'équipe suffit pour fusionner.
+# This file declares sensitive paths only. There is deliberately no catch-all
+# `*` rule: a path not listed here has no owner, and one approval from any
+# team member is enough to merge.
 #
-# Rappel de syntaxe : la DERNIÈRE règle qui correspond gagne. Les chemins les plus
-# spécifiques sont donc en bas de fichier.
-# Ce fichier doit exister sur CHAQUE branche de base protégée (CODEOWNERS est lu
-# depuis la branche de base de la PR, pas depuis la branche par défaut).
+# Syntax reminder: the LAST matching rule wins, so the most specific paths
+# belong at the bottom of the file.
+# This file must exist on EVERY protected base branch. CODEOWNERS is read from
+# the pull request's base branch, not from the default branch.
 
-# --- Chaîne d'exécution CI et secrets ---------------------------------------
-# Les workflows exécutent du code arbitraire avec accès aux secrets du repo.
+# --- CI execution surface and secrets ----------------------------------------
+# Workflows run arbitrary code with access to the repository secrets.
 /.github/ @Supplement-Bacon/plethore-maintainers
 
-# --- Le fichier CODEOWNERS lui-même ------------------------------------------
-# Sans cette règle, la gouvernance est contournable par une simple PR.
+# --- The CODEOWNERS file itself ----------------------------------------------
+# Without this rule, governance can be lifted by a single pull request.
 /CODEOWNERS @Supplement-Bacon/plethore-maintainers
 /.github/CODEOWNERS @Supplement-Bacon/plethore-maintainers
 
-# --- Chaîne d'approvisionnement ----------------------------------------------
+# --- Supply chain -------------------------------------------------------------
 /package.json @Supplement-Bacon/plethore-maintainers
 /package-lock.json @Supplement-Bacon/plethore-maintainers
 /yarn.lock @Supplement-Bacon/plethore-maintainers
 
-# --- Build, publication, infrastructure --------------------------------------
+# --- Build, publishing, infrastructure ----------------------------------------
 /tsup.config.ts @Supplement-Bacon/plethore-maintainers
 /tsconfig.json @Supplement-Bacon/plethore-maintainers
 /.npmrc @Supplement-Bacon/plethore-maintainers
