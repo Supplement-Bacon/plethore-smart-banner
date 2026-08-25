@@ -2,6 +2,10 @@ name: Deploy embed.js
 
 # Publishes dist/embed.js to the smart-banner CDN whenever it changes:
 #   push on main -> production environment,  push on dev -> staging environment.
+# A manual run picks its environment explicitly: the default branch moved from
+# main to dev on 2026-08-24, which silently flipped an unqualified dispatch from
+# production to staging. Safe direction, but implicit, and it would have flipped
+# the other way just as quietly.
 # Auth follows the org standard (OIDC role assumption, like plethore-whatsapp-bot) —
 # no static AWS keys required.
 #
@@ -21,6 +25,12 @@ on:
     paths:
       - dist/embed.js
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment. production is refused unless dispatched from main."
+        type: choice
+        options: [staging, production]
+        default: staging
 
 permissions:
   id-token: write
@@ -36,8 +46,14 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || (github.ref_name == 'main' && 'production' || 'staging') }}
     steps:
+      - name: A production dispatch must come from main
+        if: github.event_name == 'workflow_dispatch' && inputs.environment == 'production' && github.ref_name != 'main'
+        run: |
+          echo "::error::refusing to publish '${{ github.ref_name }}' to production; dispatch from main"
+          exit 1
+
       - name: Checkout
         uses: actions/checkout@v4
 
