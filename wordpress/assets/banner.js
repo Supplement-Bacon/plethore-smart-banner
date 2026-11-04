@@ -25,6 +25,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         const data = await dataResponse.json();
         const localizedData = data[getLocale()];
 
+        if (!localizedData || !isHttpsUrl(localizedData.buttonUrl) || !isHttpsUrl(localizedData.iconUrl)) {
+            return;
+        }
+
         const banner = document.createElement("div");
         banner.innerHTML = html;
 
@@ -54,6 +58,21 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.body.prepend(banner);
     } catch (error) {
         console.error("Plethore Smart Banner error:", error);
+    }
+
+    /**
+     * True only for absolute https: URLs.
+     * @returns boolean
+     */
+    function isHttpsUrl(value) {
+        if (typeof value !== "string") {
+            return false;
+        }
+        try {
+            return new URL(value).protocol === "https:";
+        } catch (e) {
+            return false;
+        }
     }
 
     /**
