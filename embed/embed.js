@@ -154,6 +154,22 @@
         return root;
     }
 
+    /**
+     * True only for absolute https: URLs.
+     * @param {*} value
+     * @returns {boolean}
+     */
+    function isHttpsUrl(value) {
+        if (typeof value !== "string") {
+            return false;
+        }
+        try {
+            return new URL(value).protocol === "https:";
+        } catch (e) {
+            return false;
+        }
+    }
+
     async function run() {
         if (!accountSlug) {
             return;
@@ -168,7 +184,7 @@
         var response = await fetch(DATA_BASE_URL + accountSlug + ".json");
         var data = await response.json();
         var localized = data[getLocale()];
-        if (!localized) {
+        if (!localized || !isHttpsUrl(localized.buttonUrl) || !isHttpsUrl(localized.iconUrl)) {
             return;
         }
 
